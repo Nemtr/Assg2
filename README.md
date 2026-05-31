@@ -44,9 +44,12 @@ sudo apt install python3 python3-pip python3-venv ffmpeg -y
 
 (Windows users should download the FFmpeg essentials build from the official site and add its \bin directory to the system environment variables)
 
-### Step 2: Navigate to Project Workspace
+### Step 2: Getting source code and Navigate to Project Workspace
 
-cd assignment2
+Create a folder, open the terminal at the folder's directory and type in commands:
+
+git clone https://github.com/Nemtr/Assg2
+cd Assg2
 
 ### Step 3: Instantiate and Activate Virtual Environment
 
@@ -69,7 +72,7 @@ Ensure your virtual environment (.venv) is active, then launch the main interfac
 streamlit run src/app.py
 
 ## 6. Project structure
-assignment2/
+Assg2/
 
 ├── data/
 
