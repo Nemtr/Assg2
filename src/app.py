@@ -2,7 +2,7 @@ import streamlit as st
 import joblib
 import os
 import pandas as pd
-from features import extract_video_features
+from features import extract_video_features, calculate_video_psnr
 from video_coder import encode_video_dynamic
 
 st.set_page_config(page_title="Video ML Optimizer", layout="wide")
@@ -18,7 +18,7 @@ def load_models():
 try:
     model_qp, model_gop = load_models()
 except Exception:
-    st.error("❌ Không tìm thấy file Model AI!")
+    st.error("❌ Không tìm thấy file Model AI trong thư mục models/!")
     st.stop()
 
 st.markdown("### 1. Tải Video Cần Tối Ưu")
@@ -50,7 +50,13 @@ if uploaded_file is not None:
         if features:
             st.info(f"📊 **SI Mean:** {features['si_mean']:.2f} | **TI Mean:** {features['ti_mean']:.2f}")
             
-            input_df = pd.DataFrame([features])
+            input_df = pd.DataFrame([{
+                'si_mean': features['si_mean'],
+                'si_std': features['si_std'],
+                'ti_mean': features['ti_mean'],
+                'ti_std': features['ti_std']
+            }])
+            
             pred_qp = int(model_qp.predict(input_df)[0])
             pred_gop = int(model_gop.predict(input_df)[0])
             
@@ -64,20 +70,44 @@ if uploaded_file is not None:
             if st.button("🚀 Chạy FFmpeg với Cấu hình AI", use_container_width=True):
                 with st.spinner("Đang thực hiện tối ưu hóa cấu hình..."):
                     success, orig_sz, comp_sz = encode_video_dynamic(input_path, output_path, pred_qp, pred_gop)
-                    
+
                 if success:
                     st.balloons()
                     savings = ((orig_sz - comp_sz) / orig_sz) * 100
                     
-                    st.markdown("#### 📈 Báo cáo Băng thông (Bitrate Savings Demo)")
-                    r1, r2, r3 = st.columns(3)
+                    # TÍNH TOÁN PSNR THỰC TẾ GIỮA 2 FILE
+                    with st.spinner("📊 Đang phân tích độ trung thực hình ảnh (PSNR)..."):
+                        avg_psnr = calculate_video_psnr(input_path, output_path)
+                    
+                    st.markdown("#### 📈 Báo cáo Hiệu năng hệ thống (Bitrate Savings & Quality Demo)")
+                    r1, r2, r3, r4 = st.columns(4)
                     r1.metric("Dung lượng Gốc", f"{orig_sz:.2f} MB")
                     r2.metric("Dung lượng Nén", f"{comp_sz:.2f} MB")
                     r3.metric("Băng thông Tiết kiệm", f"{savings:.1f}%", delta=f"-{savings:.1f}%")
+                    
+                    # Đánh giá chất lượng dựa trên thang đo tiêu chuẩn PSNR
+                    if avg_psnr >= 40:
+                        quality_status = "Xuất sắc (Giống gốc)"
+                    elif avg_psnr >= 30:
+                        quality_status = "Tốt (Mắt thường khó phân biệt)"
+                    else:
+                        quality_status = "Có suy hao chi tiết"
+                        
+                    r4.metric("Chất lượng (Avg PSNR)", f"{avg_psnr:.1f} dB", help=quality_status)
                     
                     st.markdown("### 🎬 Video Đã Tối Ưu")
                     with open(output_path, "rb") as video_file:
                         video_bytes = video_file.read()
                     st.video(video_bytes)
+                    
+                    st.download_button(
+                        label="💾 Tải Video Sau Nén Về Máy",
+                        data=video_bytes,
+                        file_name="optimized_" + original_name,
+                        mime="video/mp4",
+                        use_container_width=True
+                    )
                 else:
                     st.error("❌ Có lỗi xảy ra trong quá trình nén cấu hình.")
+        else:
+            st.error("❌ Không thể trích xuất đặc trưng từ video này!")
