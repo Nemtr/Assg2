@@ -1,4 +1,5 @@
 import subprocess
+import shutil
 import os
 
 def encode_video_dynamic(input_path, output_path, qp, gop):
