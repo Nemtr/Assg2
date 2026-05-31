@@ -78,6 +78,46 @@ def generate_heuristic_labels(si_mean, ti_mean):
         
     return qp, gop
 
+def calculate_video_psnr(video_path_orig, video_path_comp):
+    """
+    Tính toán chỉ số PSNR trung bình giữa video gốc và video sau nén
+    """
+    cap_orig = cv2.VideoCapture(video_path_orig)
+    cap_comp = cv2.VideoCapture(video_path_comp)
+    
+    psnr_values = []
+    
+    while True:
+        ret_o, frame_o = cap_orig.read()
+        ret_c, frame_c = cap_comp.read()
+        
+        # Nếu một trong hai video hết khung hình thì dừng
+        if not ret_o or not ret_c:
+            break
+            
+        # Chuyển sang hệ xám để tính toán sai số cấu trúc pixel
+        gray_o = cv2.cvtColor(frame_o, cv2.COLOR_BGR2GRAY)
+        gray_c = cv2.cvtColor(frame_c, cv2.COLOR_BGR2GRAY)
+        
+        # Đảm bảo hai khung hình cùng kích thước (đề phòng trường hợp có thay đổi độ phân giải)
+        if gray_o.shape != gray_c.shape:
+            gray_c = cv2.resize(gray_c, (gray_o.shape[1], gray_o.shape[0]))
+            
+        # Tính toán PSNR giữa 2 khung hình bằng hàm có sẵn của OpenCV
+        psnr_frame = cv2.PSNR(gray_o, gray_c)
+        
+        # Loại bỏ các giá trị vô hạn (khi 2 khung hình giống nhau 100%)
+        if psnr_frame < 100:
+            psnr_values.append(psnr_frame)
+            
+    cap_orig.release()
+    cap_comp.release()
+    
+    if len(psnr_values) == 0:
+        return 100.0  # Hai video giống hệt nhau tuyệt đối
+        
+    return np.mean(psnr_values)
+
 def process_dataset_to_csv(raw_dir="data/raw", output_csv="data/video_dataset.csv"):
     video_files = glob.glob(os.path.join(raw_dir, "*.mp4"))
     if not video_files:
