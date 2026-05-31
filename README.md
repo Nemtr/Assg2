@@ -76,4 +76,5 @@ Trần Lê Hải Nam (20213580) - Lead Developer for System Design & Backend.
 Nguyễn Hữu Mạnh (20224288) - Lead Developer for Machine Learning & Evaluation.
 Supervisor: TS. Phạm Văn Tiến
 Project management link (Trello): https://trello.com/b/2f1nnEKv/assg2
+Link to the dataset (data/raw): https://drive.google.com/drive/folders/1iMnPJBqEXA7cul_QOurXc_Tz8WVm-79b?usp=sharing
 
