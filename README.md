@@ -13,10 +13,10 @@ The system extracts **Spatial Information (SI)** and **Temporal Information (TI)
 AI-Driven Parameter Prediction: Analyzes the physical characteristics of incoming `.mp4` videos using spatial edge density (Sobel Filter) and inter-frame motion vectors.
     
 Dynamic Codec Tuning:
-
-    Low-Motion / Static Content: Lengthens GOP structure (up to 90) and raises CRF thresholds to achieve massive storage reduction (up to 95% bandwidth savings).
     
-    Perception-Aware Encoding (CRF): Implements Constant Rate Factor coding (`libx264`) rather than standard rigid QP, leveraging human visual boundaries to drop bitrates.
+a.Low-Motion / Static Content: Lengthens GOP structure (up to 90) and raises CRF thresholds to achieve massive storage reduction (up to 95% bandwidth savings).
+    
+b.Perception-Aware Encoding (CRF): Implements Constant Rate Factor coding (`libx264`) rather than standard rigid QP, leveraging human visual boundaries to drop bitrates.
 
 Interactive Web UI: Real-time metrics visualization representing raw features, predicted parameters, and cross-comparison compression ratios.
 
