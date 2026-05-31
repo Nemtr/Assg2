@@ -1,0 +1,12 @@
+# Bỏ qua môi trường ảo và cache của Python
+venv/
+__pycache__/
+*.pyc
+
+# Bỏ qua các file Video nặng (Mạnh tự tải video mẫu về máy Mạnh test sau)
+data/raw/*.mp4
+data/raw/*.yuv
+data/temp/*.mp4
+
+# Bỏ qua file ẩn của hệ điều hành
+.DS_Store
