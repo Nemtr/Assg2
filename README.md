@@ -90,13 +90,13 @@ Assg2/
 
 ├── src/
 
-    ├── app.py                # Multi-column interactive UI dashboard logic
+│   ├── app.py                # Multi-column interactive UI dashboard logic
     
-    ├── features.py           # OpenCV Sobel matrix pipelines and metadata extraction
+│   ├── features.py           # OpenCV Sobel matrix pipelines and metadata extraction
     
-    ├── train_ml.py           # Ensemble SciKit-Learn mapping & serialization core
+│   ├── train_ml.py           # Ensemble SciKit-Learn mapping & serialization core
     
-    └── video_coder.py        # FFmpeg dynamic assembly core & guardrail execution
+│   └── video_coder.py        # FFmpeg dynamic assembly core & guardrail execution
     
 ├── README.md
 
